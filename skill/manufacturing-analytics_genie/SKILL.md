@@ -1,6 +1,6 @@
 ---
 name: manufacturing-analytics
-description: Manufacturing quality domain knowledge + Genie space best practices. Use this skill when building Genie spaces, writing manufacturing analytics, or creating evaluation benchmarks.
+description: Manufacturing quality domain knowledge + Genie agent best practices. Use this skill when building Genie agents, writing manufacturing analytics, or creating evaluation benchmarks.
 ---
 
 # Manufacturing Analytics
@@ -81,11 +81,11 @@ The distribution is weighted — `unit_produced` is the most common (~40%), foll
 
 ---
 
-## Part 2 — Genie Space Best Practices
+## Part 2 — Genie Agent Best Practices
 
-### What Makes a Good Genie SQL Space
+### What Makes a Good Genie Agent
 
-A well-configured Genie space has 6 components. Each component builds on the previous — skip one and answer quality drops.
+A well-configured Genie agent has 6 components. Each component builds on the previous — skip one and answer quality drops.
 
 ### 1. SQL Instructions (required)
 
@@ -205,12 +205,12 @@ FAIL: ratio > 0.15 or Genie couldn't answer
 
 ### 6. A/B Testing Pattern
 
-Create two variants of the same space to quantify the impact of curation:
+Create two variants of the same agent to quantify the impact of curation:
 
 - **Variant A (configured):** Full instructions + sample questions + curated Q→SQL examples
 - **Variant B (blank or no-examples):** Same tables, minimal or no instructions, no examples
 
-Run the same benchmark suite against both. The configured space typically scores 10-30% higher, proving the value of investing in curation.
+Run the same benchmark suite against both. The configured agent typically scores 10-30% higher, proving the value of investing in curation.
 
 ### Monitoring and Continuous Improvement
 
@@ -227,7 +227,7 @@ Run the same benchmark suite against both. The configured space typically scores
 4. Promote good user interactions as new curated examples
 5. Schedule weekly automated benchmark runs — alert on drops
 
-### CI/CD Pattern for Genie Spaces
+### CI/CD Pattern for Genie Agents
 
 **3-phase deployment:**
 1. **Export:** `GET /api/2.0/genie/spaces/{id}?include_serialized_space=true`
@@ -244,14 +244,14 @@ Run the same benchmark suite against both. The configured space typically scores
 
 ## Part 3 — Genie REST API Reference (for notebook authors)
 
-> **Note for Genie Code:** This section is reference material for humans writing notebooks that call the API directly (e.g., notebooks 03-05 in this workshop). When a user asks you to **create or configure a Genie space**, use your built-in space creation capability — do NOT generate raw API code from this section. Simply create the space with the tables, instructions, sample questions, and curated examples the user describes.
+> **Note for Genie Code:** This section is reference material for humans writing notebooks that call the API directly (e.g., notebooks 03-05 in this workshop). When a user asks you to **create or configure a Genie agent**, use your built-in agent creation capability — do NOT generate raw API code from this section. Simply create the agent with the tables, instructions, sample questions, and curated examples the user describes.
 
 ### Two API Families
 
 Genie has two separate API families that target different parts of the UI:
 
-**1. `genie/spaces` API** — for space config, curated SQL examples, sample questions:
-- `POST /api/2.0/genie/spaces` — create a space (with `serialized_space` for full config)
+**1. `genie/spaces` API** — for agent config, curated SQL examples, sample questions:
+- `POST /api/2.0/genie/spaces` — create an agent (with `serialized_space` for full config)
 - `PATCH /api/2.0/genie/spaces/{id}` — update config via `serialized_space`
 - `POST /api/2.0/genie/spaces/{id}/start-conversation` — ask Genie a question
 - `GET /api/2.0/genie/spaces/{id}/conversations/{cid}/messages/{mid}` — poll for answer
@@ -335,15 +335,15 @@ The `serialized_space` field is a **JSON string** (not a nested object) passed i
 
 ### Reading `serialized_space` (GET with `include_serialized_space`)
 
-By default, `GET /api/2.0/genie/spaces/{id}` returns only space metadata (title, description, warehouse_id). To read the full configuration, add the query parameter `include_serialized_space=true`:
+By default, `GET /api/2.0/genie/spaces/{id}` returns only agent metadata (title, description, warehouse_id). To read the full configuration, add the query parameter `include_serialized_space=true`:
 
 ```python
-space = requests.get(
+agent = requests.get(
     f"{host}/api/2.0/genie/spaces/{space_id}",
     headers=headers,
     params={"include_serialized_space": "true"},
 ).json()
-config = json.loads(space["serialized_space"])
+config = json.loads(agent["serialized_space"])
 ```
 
 This returns the complete blob: `version`, `instructions` (text_instructions, example_question_sqls), `data_sources`, `config` (sample_questions), and `benchmarks` (questions).
@@ -360,11 +360,11 @@ This returns the complete blob: `version`, `instructions` (text_instructions, ex
 Important rules for the modify step:
 - `text_instructions` is limited to **1 item** (the Genie Workbench truncates to the first)
 - Each `text_instructions` item has `id` (32-char hex) and `content` (list of strings) — preserve the existing `id`
-- Keep your template JSON file as the single source of truth for initial space creation
+- Keep your template JSON file as the single source of truth for initial agent creation
 
 ### Dedup / Idempotency
 
-Before creating a space, always check if one with the same title already exists:
+Before creating an agent, always check if one with the same title already exists:
 
 ```python
 def list_spaces():
@@ -378,11 +378,11 @@ for s in list_spaces():
         requests.patch(f"{host}/api/2.0/genie/spaces/{s['space_id']}", ...)
         break
 else:
-    # POST new space
+    # POST new agent
     requests.post(f"{host}/api/2.0/genie/spaces", ...)
 ```
 
-Without this guard, every notebook re-run creates a duplicate space.
+Without this guard, every notebook re-run creates a duplicate agent.
 
 ### UI URL Construction
 
@@ -403,5 +403,5 @@ def genie_ui_room_url(space_id):
 | 401 "Credential was not sent" | Using `w.config.token` (None on serverless) | Use `w.config.authenticate()` |
 | 400 `INVALID_PARAMETER_VALUE` | `example_question_sqls` not sorted by `id` | Add `.sort(key=lambda x: x["id"])` before PATCH |
 | 400 "unknown field" | Flat fields like `sql_instructions` in POST body | Move everything into `serialized_space` JSON string |
-| 409 Conflict | Space with same title already exists | List spaces first, PATCH if found |
+| 409 Conflict | Agent with same title already exists | List agents first, PATCH if found |
 | 404 on GET `serialized_space` | Field is write-only, not returned by GET | Rebuild from template, don't try to read it |
