@@ -11,7 +11,8 @@ A 4‑hour, hands‑on workshop that teaches attendees to **build, curate, evalu
 The point of the session is **not** "add tables to Genie and watch it do magic." It's that a Genie Agent is only as good as the **data foundation and curation** behind it. Drive these messages home:
 
 - **Data foundations first.** Genie is only as good as the gold‑layer, well‑modeled data that powers it (star schema / dimensional modeling; a governed semantic layer via **metric views**). This is a *prerequisite*, not the focus — mention it firmly, but don't turn the session into a data‑modeling class.
-- **Fewer, better, trusted agents.** Sprawl kills adoption: a large fleet of thin, unvalidated agents sees very low real usage. The goal is a small number of **high‑quality, benchmarked, certified** agents that users trust for decisions.
+- **Fewer, better, trusted agents.** Sprawl kills adoption: a large fleet of thin, unvalidated agents sees very low real usage — at GM specifically, **2000+ agents were built but under ~2–3% are well‑adopted.** The goal is a small number of **high‑quality, benchmarked, certified** agents that users trust for decisions, ready to serve as building blocks in **multi‑agent orchestration** (e.g., GM's Glean).
+- **Move the logic to the left.** Do as much as possible in the **data/semantic layer** (well‑modeled gold tables, metric views, SME‑defined calculations) rather than asking Genie to compute on the fly. Example: a battery/cell‑engineering agent where a chemistry‑engineer SME's domain calculations were built *into the data layer* instead of prompted at query time.
 - **Curation is the work.** Most low‑adoption agents skipped the parts that matter: **measures, filters, fields/dimensions, joins, synonyms, well‑chosen SQL examples, focused instructions, and benchmarks.** That maturity is what earns trust.
 - **Trust is measurable.** Replace "it seems to work" with **benchmarks** and monitoring. Aim for **80%+ benchmark accuracy before user acceptance testing**, then keep validating in production.
 
@@ -20,7 +21,7 @@ The point of the session is **not** "add tables to Genie and watch it do magic."
 - **~100 attendees, mixed:** data/technical **builders** plus **business consumers**; some new to Databricks. Design for two tracks in one room:
   - **Builders** — create and curate the agent (the hands‑on core).
   - **Consumers** — learn to *use* the agent and to feed quality signals back (thumbs up/down, request‑review, suggested questions). Their feedback is the reinforcement loop that improves agents.
-- **4 hours, remote/virtual, two breaks.** Presenter‑led with TAs on hand for Q&A.
+- **4 hours, remote/virtual, two breaks.** **Sept 24, 2026, 10:00–14:00 ET.** Presenter‑led (one presenter) with **DSAs as TAs** for Q&A; no GM‑side presentations (packed week). Optional: a GM SME introduces "here's how this applies to our teams" live.
 - **Hands‑on is the priority.** Everyone runs the **same notebooks together** so results are consistent; also **show the UI** so click‑oriented users see both paths.
 - **Domain SMEs matter.** The most valuable agents come from builders collaborating with subject‑matter experts who supply domain logic — and from pushing calculations **into the data/semantic layer** rather than asking Genie to compute them on the fly.
 
@@ -41,15 +42,15 @@ Genie **augments** dashboards; it doesn't replace them. Don't push users to re�
 | Orient · Genie **Agents vs Code vs One** · positioning vs BI dashboards (when to use what) | T | slides |
 | How agents work (compound AI system) · best practices · **data foundations & adoption** message | T | slides |
 | **Start with clean data** — gold layer, 3–7 focused tables | H | `01`, `02` |
-| **Build your agent** — programmatically **and** in the UI | H | `03` |
+| **Build your baseline agent** — programmatically **and** in the UI | H | `03` |
+| **Metric views** as the governed semantic layer (+ metric-view agent) | H | `03b` |
 | *Break* | | |
-| **Knowledge Store** — comments, synonyms, joins, measures, SQL expressions, filters, fields/dimensions, example SQL, instructions | H | new KS notebook |
-| **Metric views** as the governed semantic layer | H | new |
-| **Evaluate with Benchmarks** + Monitoring & **consumer feedback actions** | H | `04`, `10` |
+| **Knowledge Store** — synonyms, joins, measures, filters, fields, example SQL, minimal instructions | H | `04` |
+| **Evaluate with Benchmarks** + Monitoring & **consumer feedback actions** | H | `05`, `11` |
 | *Break* | | |
-| **Ask your own questions** in the agent | H | `05` |
+| **Ask your own questions** in the agent | H | `06` |
 | **What's new/next:** iframe embed (GA) · Conversation API · Genie One in Slack/Teams · mobile app · Genie Workbench · multi‑agent orchestration | T/D | slides + snippets |
-| **Demo:** regular vs. Knowledge‑Store‑curated vs. metric‑view agent · **Q&A** | D | `07` (3‑way) |
+| **Demo:** baseline vs. Knowledge‑Store‑curated vs. metric‑view agent · **Q&A** | D | `08` (3‑way) |
 
 ---
 
@@ -145,20 +146,27 @@ serialized_space = {
 
 ---
 
-## 6. Repo build backlog (to finish before the session)
-1. **Knowledge Store notebook** — build measures / expressions / filters / joins / synonyms / hidden columns / example SQL programmatically via `serialized_space` *(blocked on confirming the exact schema from a live dump)*.
-2. **Metric view** + a **metric‑view‑based agent** variant.
-3. **3‑way comparison demo** in `07`: regular vs. Knowledge‑Store‑curated vs. metric‑view agent.
-4. **Trim** the configured agent's monolithic text‑instruction blob; move logic into SQL expressions/measures/example SQL; add the instruction do/don'ts + clarification pattern.
-5. **iframe‑embedding** mini‑notebook/guide (GA); tighten Conversation API usage to the 5.9 cadence.
-6. **Consumer‑feedback** content in the monitoring notebook (rate / request‑review / suggest questions).
-7. **"When to use Genie vs. dashboard"** section in the intro and a recap in `05`.
-8. Keep the **cleanup** notebook prominent (attendees destroy their sandbox agents when done).
+## 6. Repo build backlog
+
+**Done (critical path):**
+1. ✅ **Knowledge Store notebook** (`04`) — measures / filters / fields / joins / synonyms / hidden columns / example SQL built programmatically via `serialized_space` v2 (schema confirmed from the Genie Workbench source; includes a local constraint validator).
+2. ✅ **Metric view + metric‑view agent** (`03b`) — `mv_line_quality` with pinned joins/KPIs, plus a Genie agent on top.
+3. ✅ **3‑way comparison** (`08`) — baseline vs. Knowledge‑Store vs. metric‑view, reusing the benchmark scorer.
+4. ✅ **Trimmed the monolithic blob** — `03` is now a lean baseline; the logic lives in `04`'s structured components; minimal text instructions (clarification + formatting only).
+5. ✅ **Agent model + renumber** — three agents (baseline/metric‑view/knowledge‑store) via a shared idempotent `save_config_keys`; notebooks renumbered `04→05 … 12→13`, cross‑refs swept; cleanup (`13`) deletes all agents + the metric view.
+
+**Remaining (pass 2):**
+6. `05` benchmarks: add the blog's **progressive‑accuracy narrative** (0→54→77→100%) + LLM‑judge / Agent‑mode note.
+7. `11` monitoring: **consumer‑feedback loop** (Yes / Fix it / Request review, "Analyze Space Usage"); soften the no‑native‑alerts claim.
+8. **"When to use Genie vs. dashboard"** markdown in `00` + recap in `06`.
+9. **iframe‑embedding** mini‑guide (GA); tighten Conversation API usage to the 5.9 cadence.
+10. **SKILL.md** benchmark‑API self‑contradiction fix; verify skill against the confirmed schema.
 
 ## 7. Open items to confirm
-- **`serialized_space` dump** from a UI‑curated agent — unblocks the Knowledge Store notebook.
-- **Registration mix** — if one function (e.g., finance) dominates, add a tailored example; otherwise keep manufacturing.
-- **Entitlements confirmed** for all registrants (sandbox + workspace + SQL + consumer) — see `PREREQUISITES.md`.
+- **Live `serialized_space` dump** from a UI‑curated agent — the `04` builder targets the Workbench‑confirmed shape; verify field-for-field against a real dump (`GET …?include_serialized_space=true`) before the session and reconcile if anything differs.
+- **Verify metric‑view DDL** (`CREATE VIEW … WITH METRICS LANGUAGE YAML`) and the `MEASURE()` query syntax in the target workspace version.
+- **Registration list pending** (from the coordinator) → confirms the audience mix; **finance** is the notable interested function. If one function dominates, add a tailored example; otherwise keep manufacturing.
+- **Entitlements confirmed** for all registrants (sandbox + workspace + SQL + consumer) — the entitlements/platform team to verify against the list; see `PREREQUISITES.md`. Prework text has already been broadcast to registrants.
 - Optional **SME live use‑case intro** slot ("here's how this applies to our teams").
 
 ---

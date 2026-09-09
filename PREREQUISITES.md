@@ -22,7 +22,7 @@
 2. **Import the workshop assets** into your workspace so the folders sit side‑by‑side:
    ```
    /Workspace/Users/<your_email>/genie-agents-workshop/
-     notebooks/     ← workshop notebooks (00–12)
+     notebooks/     ← workshop notebooks (00–13, incl. 03b)
      templates/     ← Genie Agent configuration
      skill/         ← Genie Code skill file
    ```
@@ -30,7 +30,7 @@
 
 ## During & after the session
 - You'll create Genie Agents and supporting tables in **your own sandbox**.
-- **Clean up when you're done.** Run the final **cleanup notebook (`12_cleanup`)** to delete the agents, tables, volume, and app you created. *Bring your sandbox; be prepared to destroy the space once done.*
+- **Clean up when you're done.** Run the final **cleanup notebook (`13_cleanup`)** to delete the agents, tables, volume, and app you created. *Bring your sandbox; be prepared to destroy the space once done.*
 
 ## Quick self‑test (optional)
 In a notebook, run:

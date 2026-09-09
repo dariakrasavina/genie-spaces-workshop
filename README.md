@@ -1,71 +1,72 @@
-# Databricks Genie Workshop — Manufacturing Quality Analytics
+# Databricks Genie Agents Workshop — Manufacturing Quality Analytics
 
-A hands-on workshop that teaches you how to build, evaluate, and optimize a
-**Databricks Genie** agent for manufacturing analytics. You will create a
-fully configured AI assistant that answers natural-language questions about
-OEE, defect rates, scrap, downtime, and safety — then prove its accuracy
-with automated benchmarks.
+A hands-on workshop that teaches you to **build, curate, evaluate, and operate a production-ready Databricks Genie Agent** on manufacturing quality data — and to know when *not* to use one.
+
+The core message: a Genie Agent is only as good as the **data foundation and curation** behind it. You'll build **three agents on the same data** and prove, with benchmarks, that curation is what earns trust:
+
+- **Baseline** — tables only (the "before")
+- **Metric View** — a governed semantic layer with pinned joins and KPI formulas
+- **Knowledge Store** — measures, filters, fields, joins, synonyms, and example SQL (the "after", and your primary agent)
 
 ## Workshop flow
 
 ```mermaid
 flowchart LR
-    subgraph data ["1. Data"]
+    subgraph data ["1. Data foundation"]
         NB01["01 Load Data"]
         NB02["02 Prepare Tables"]
     end
-    subgraph genie ["2. Build Genie"]
-        NB03["03 Create Agents"]
-        NB04["04 Benchmarks"]
-        NB05["05 Explore"]
-        NB06["06 Code Skills"]
+    subgraph build ["2. Build & curate"]
+        NB03["03 Baseline agent"]
+        NB03b["03b Metric Views"]
+        NB04["04 Knowledge Store"]
     end
-    subgraph prove ["3. Prove It"]
-        NB07["07 A/B Compare"]
+    subgraph prove ["3. Evaluate"]
+        NB05["05 Benchmarks"]
+        NB08["08 3-way Compare"]
     end
-    subgraph govern ["4. Govern & Deploy"]
-        NB08["08 Security"]
-        NB09["09 App"]
-        NB10["10 Monitoring"]
-        NB11["11 CI/CD"]
+    subgraph use ["4. Use & operate"]
+        NB06["06 Explore"]
+        NB07["07 Genie Code"]
+        NB09["09 Security"]
+        NB10["10 App"]
+        NB11["11 Monitoring"]
+        NB12["12 CI/CD"]
     end
 
-    NB01 --> NB02 --> NB03 --> NB04 --> NB05 --> NB06 --> NB07 --> NB08 --> NB09 --> NB10 --> NB11
+    NB01 --> NB02 --> NB03 --> NB03b --> NB04 --> NB05 --> NB06 --> NB07 --> NB08 --> NB09 --> NB10 --> NB11 --> NB12
 ```
 
 ## What you will walk away with
 
-- **A production-ready Genie agent** with curated instructions, Q-to-SQL examples, and benchmarks that answer manufacturing questions accurately.
-- **Proof that curation matters** (Notebook 07) — the same 4 hard questions pass on a configured agent and fail on a blank one, showing that investing in examples and instructions is the difference.
-- **A repeatable evaluation workflow** (Notebook 04) — push benchmarks, run them in the UI, review failures with knowledge snippets, and iterate until 100%.
-- **A Genie Code skill** (Notebook 06) — a reusable domain knowledge file that lets you create new agents from a simple prompt, no API code required.
-- **Security guardrails** (Notebook 08) — column masking with Unity Catalog, proving Genie respects row/column security policies.
-- **A deployable app** (Notebook 09) — Genie wrapped in a branded Databricks App your users can access directly.
+- **A production-ready Genie agent** with a structured **Knowledge Store** (Notebook 04) — measures, joins, synonyms, and Q-to-SQL examples — instead of one brittle instructions blob.
+- **A governed metric view** (Notebook 03b) that pins KPI formulas and joins in Unity Catalog — the "move the logic to the left" pattern.
+- **Proof that curation matters** (Notebook 08) — the same hard questions run against baseline, metric-view, and Knowledge Store agents, side by side.
+- **A repeatable evaluation workflow** (Notebook 05) — push benchmarks, run them in the UI, review failures with knowledge snippets, and iterate.
+- **Security guardrails** (Notebook 09) — column masking with Unity Catalog, proving Genie respects row/column security.
+- **A deployable app** (Notebook 10), **monitoring** (Notebook 11), and **CI/CD** (Notebook 12).
 
 ## Prerequisites
 
-- Databricks workspace with **Unity Catalog** and **Genie** enabled
-- A catalog and schema where you have `CREATE TABLE`, `CREATE VOLUME`, and `CREATE FUNCTION` permissions
-- A running **SQL warehouse** (serverless or Pro)
-- **Serverless** notebook compute (or a classic cluster with Unity Catalog access)
+See **`PREREQUISITES.md`** for the full checklist. In short: a Databricks workspace with **Unity Catalog** and **Genie** enabled, a **Pro/Serverless SQL warehouse**, and privileges to `CREATE TABLE`, `CREATE VOLUME`, `CREATE FUNCTION`, and `CREATE VIEW` (metric views) in a sandbox catalog/schema.
 
 ## Getting started
 
 1. Import the **`notebooks/`**, **`templates/`**, and **`skill/`** folders into your Databricks workspace so they sit side-by-side:
 
    ```
-   /Workspace/Users/<your_email>/GM-Genie-Workshop/
-     notebooks/        ← 13 notebooks (00–12)
-     templates/        ← Genie agent configuration
+   /Workspace/Users/<your_email>/genie-agents-workshop/
+     notebooks/        ← 15 notebooks (00–13, includes 03b)
+     templates/        ← Genie agent configuration (reference)
      skill/            ← Genie Code skill file
    ```
 
 2. Open **`00_workshop_config`** and set your **catalog** and **schema**.
 
-3. Run notebooks **01 → 12** in order. Every notebook reads your config
+3. Run notebooks **01 → 13** in order. Every notebook reads your config
    automatically via `%run ./00_workshop_config`.
 
-   Notebook 09 generates the Databricks App source (`app.py`, `app.yaml`,
+   Notebook 10 generates the Databricks App source (`app.py`, `app.yaml`,
    `requirements.txt`) for you — there is no separate `app/` folder to import.
 
 ## Notebooks
@@ -75,24 +76,26 @@ flowchart LR
 | 00 | **Workshop Config** | Set your catalog, schema, and preferences |
 | 01 | **Load Data** | Create 7 manufacturing tables (plants, lines, operators, events, quality metrics, safety, feedback) |
 | 02 | **Prepare Data** | Add table comments, create analytics functions |
-| 03 | **Create Genie Agents** | Create 3 agents (Blank, Configured, No Examples) |
-| 04 | **Benchmarks** | Push 10 benchmark questions to the Genie Benchmarks tab, run in the UI, fix failures with knowledge snippets and ground truth updates |
-| 05 | **Explore with Genie** | Ask questions in the Genie UI, verify with reference SQL and programmatic spot checks |
-| 06 | **Code Skills** | Use a Genie Code skill and a prompt to create a Genie agent — no API code needed |
-| 07 | **A/B Compare** | Prove curated examples matter: run 4 hard questions on both agents, fix the poor agent, then validate in the UI with benchmarks and knowledge snippets |
-| 08 | **Security** | Column masking with Unity Catalog — prove Genie respects row/column security |
-| 09 | **Deploy App** | Wrap Genie in a branded Databricks App |
-| 10 | **Monitoring** | Track accuracy, usage, and query performance over time |
-| 11 | **CI/CD** *(optional)* | Promote Genie agents across environments with code |
-| 12 | **Cleanup** *(optional)* | Remove all workshop assets |
+| 03 | **Baseline Agent** | Create a tables-only agent — the "before" for comparison |
+| 03b | **Metric Views** | Build a governed metric view (semantic layer) and an agent on top of it |
+| 04 | **Knowledge Store** | Curate programmatically: measures, filters, fields, joins, synonyms, example SQL — the primary agent |
+| 05 | **Benchmarks** | Push benchmark questions, run in the UI, fix failures with knowledge snippets and ground-truth updates |
+| 06 | **Explore with Genie** | Ask questions in the Genie UI, verify with reference SQL |
+| 07 | **Genie Code Skills** | Use a Genie Code skill and a prompt to create an agent — no API code needed |
+| 08 | **3-way Compare** | Run the same hard questions on baseline vs. metric-view vs. Knowledge Store agents |
+| 09 | **Security** | Column masking with Unity Catalog — prove Genie respects row/column security |
+| 10 | **Deploy App** | Wrap Genie in a Databricks App |
+| 11 | **Monitoring** | Track accuracy, usage, and query performance over time |
+| 12 | **CI/CD** *(optional)* | Promote Genie agents across environments with code |
+| 13 | **Cleanup** *(optional)* | Remove all workshop assets (agents, metric view, tables, volume, app) |
 
 ## How the evaluation works
 
-**Notebook 04** defines 10 benchmark questions that teach Genie the right SQL patterns:
+**Notebook 05** defines benchmark questions with ground-truth SQL and pushes them to the primary agent's **Benchmark** tab:
 
 ```mermaid
 flowchart TD
-    B1["Define 10 benchmark questions\nwith ground-truth SQL"] --> B2["Push to Genie\nBenchmarks tab"]
+    B1["Define benchmark questions\nwith ground-truth SQL"] --> B2["Push to Genie\nBenchmarks tab"]
     B2 --> B3["Run in UI\nReview failures"]
     B3 --> B4["Accept knowledge snippets\nUpdate ground truth"]
     B4 --> B5{"All passing?"}
@@ -100,43 +103,41 @@ flowchart TD
     B5 -->|Yes| B6["Benchmarks green"]
 ```
 
-**Notebook 07** uses 4 harder questions to prove curated examples matter:
+**Notebook 08** proves curation matters by running the same four hard questions against all three agents:
 
 ```mermaid
 flowchart TD
-    A1["4 hard questions\nnot in benchmarks"] --> A2["Phase 1: Run on\nGood and Poor agents"]
-    A2 --> A3["Phase 2: Fix Poor agent\nby adding curated examples"]
-    A3 --> A4["Phase 3: Re-test\nPoor agent passes"]
-    A4 --> A5["Phase 4: Validate in UI\nBenchmark all 4 questions"]
-    A5 --> A6["Add curated example\nto fix Q4"]
-    A6 --> A7["Re-run until 100%"]
+    A1["4 hard questions"] --> A2["Run on Baseline,\nMetric View, Knowledge Store"]
+    A2 --> A3["Compare pass rates\nside by side"]
+    A3 --> A4["Baseline struggles;\nKnowledge Store wins;\nMetric View is deterministic\nwithin its perimeter"]
 ```
 
-The 10 benchmarks **teach patterns** (state joins, ratio calculations, shift
-aggregation) using different filters and time ranges. The 4 evaluation
-questions in notebook 07 are intentionally **different** -- Genie must
-generalize from the patterns, not memorize answers.
+The benchmark questions **teach patterns** (state joins, ratio calculations, shift
+aggregation). The four comparison questions in notebook 08 are intentionally
+**different** — Genie must generalize from the curation, not memorize answers.
 
 ## Notebook-specific notes
 
-- **06 — Skills:** Copy `skill/manufacturing-analytics_genie/SKILL.md` into your workspace's `.assistant/skills/` directory before running notebook 06.
-- **08 — Security:** Replace `admin_group` with a real group in your workspace.
-- **09 — App:** Notebook 09 generates the app source (`app.py`, `app.yaml`, `requirements.txt`) inline and deploys it — there is no committed `app/` folder.
-- **10 — Monitoring:** Queries `system.access.audit` and `system.query.history`; the notebook handles missing access gracefully.
+- **07 — Skills:** Copy `skill/manufacturing-analytics_genie/SKILL.md` into your workspace's `.assistant/skills/` directory before running notebook 07.
+- **09 — Security:** Replace `admin_group` with a real group in your workspace.
+- **10 — App:** Notebook 10 generates the app source (`app.py`, `app.yaml`, `requirements.txt`) inline and deploys it — there is no committed `app/` folder.
+- **11 — Monitoring:** Queries `system.access.audit` and `system.query.history`; the notebook handles missing access gracefully.
 
 ## Repository structure
 
 ```
-├── notebooks/          13 workshop notebooks (00–12)
-├── templates/          Genie agent configuration template
+├── notebooks/          15 workshop notebooks (00–13, includes 03b)
+├── templates/          Genie agent configuration (reference)
 │   └── manufacturing_genie_configured.json
 ├── skill/              Genie Code skill file
 │   └── manufacturing-analytics_genie/
 │       └── SKILL.md
+├── WORKSHOP_PLAN.md    Facilitator plan + best-practices reference
+├── PREREQUISITES.md    Attendee pre-work checklist
 └── README.md
 ```
 
-> Notebook 09 generates the Databricks App source (`app.py`, `app.yaml`, `requirements.txt`) at run time, so there is no committed `app/` folder.
+> Notebook 10 generates the Databricks App source at run time, so there is no committed `app/` folder.
 
 ## Compute
 
@@ -146,10 +147,10 @@ All notebooks run on **Serverless** compute. Classic clusters with Unity Catalog
 
 | Symptom | Fix |
 |---------|-----|
-| Notebook 03 fails to create agents | Check Genie entitlement, SQL warehouse availability, and API permissions. |
+| Notebook 03 / 03b / 04 fails to create an agent | Check Genie entitlement, SQL warehouse availability, and API permissions. |
 | Wrong catalog in Genie answers | Ensure notebook 00 has the same catalog/schema you used in 01–02. |
-| Notebook 07 `FileNotFoundError` | The `templates/` folder must be at the same level as `notebooks/`. |
-| Benchmarks in wrong UI tab | Notebook 04 pushes benchmarks inside `serialized_space.benchmarks` (the GA API), so they land in the Benchmarks tab. If they appear under "SQL Queries," re-run notebook 04. |
+| `CREATE VIEW ... WITH METRICS` errors in 03b | Metric-view YAML syntax varies by workspace version — check the docs for yours. |
+| Benchmarks in wrong UI tab | Notebook 05 pushes benchmarks inside `serialized_space.benchmarks` (the GA API), so they land in the Benchmarks tab. |
 
 ## License and data
 
@@ -158,4 +159,4 @@ production or customer data.
 
 ## Credits
 
-Adapted and extended from an earlier internal Databricks manufacturing Genie workshop. The Genie Agents modernization — terminology, audit fixes, and new capabilities — was added on top.
+Adapted and extended from an earlier internal Databricks manufacturing Genie workshop. The Genie Agents modernization — terminology, audit fixes, the metric-view and Knowledge Store notebooks, and the three-way comparison — was added on top.
