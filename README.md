@@ -4,9 +4,9 @@ A hands-on workshop that teaches you to **build, curate, evaluate, and operate a
 
 The core message: a Genie Agent is only as good as the **data foundation and curation** behind it. You'll build **three agents on the same data** and prove, with benchmarks, that curation is what earns trust:
 
-- **Baseline** — tables only (the "before")
-- **Metric View** — a governed semantic layer with pinned joins and KPI formulas
-- **Knowledge Store** — measures, filters, fields, joins, synonyms, and example SQL (the "after", and your primary agent)
+- **[Baseline](https://learn.microsoft.com/en-us/azure/databricks/genie-agents/concepts#select-data)** — tables only (the "before")
+- **[Metric View](https://learn.microsoft.com/en-us/azure/databricks/uc-semantics/metric-views/)** — a governed semantic layer with pinned joins and KPI formulas
+- **[Knowledge Store](https://learn.microsoft.com/en-us/azure/databricks/genie-agents/tune-quality)** — measures, filters, fields, joins, synonyms, and example SQL (the "after", and your primary agent)
 
 ## Workshop flow
 
