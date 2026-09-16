@@ -10,31 +10,16 @@ The core message: a Genie Agent is only as good as the **data foundation and cur
 
 ## Workshop flow
 
-```mermaid
-flowchart LR
-    subgraph data ["1. Data foundation"]
-        NB01["01 Load Data"]
-        NB02["02 Prepare Tables"]
-    end
-    subgraph build ["2. Build & curate"]
-        NB03["03 Baseline agent"]
-        NB03b["03b Metric Views"]
-        NB04["04 Knowledge Store"]
-    end
-    subgraph prove ["3. Evaluate"]
-        NB05["05 Benchmarks"]
-        NB08["08 3-way Compare"]
-    end
-    subgraph use ["4. Use & operate"]
-        NB06["06 Explore"]
-        NB07["07 Genie Code"]
-        NB09["09 Security"]
-        NB10["10 App"]
-        NB11["11 Monitoring"]
-        NB12["12 CI/CD"]
-    end
-
-    NB01 --> NB02 --> NB03 --> NB03b --> NB04 --> NB05 --> NB06 --> NB07 --> NB08 --> NB09 --> NB10 --> NB11 --> NB12
+```
+ 1. Data foundation       2. Build & curate         3. Evaluate           4. Use & operate
+┌─────────────────────┐  ┌────────────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+│ 01 Load Data        │  │ 03 Baseline agent      │  │ 05 Benchmarks    │  │ 06 Explore       │
+│ 02 Prepare Tables   │─▶│ 03b Metric Views       │─▶│ 08 3-way Compare │─▶│ 07 Genie Code    │
+│                     │  │ 04 Knowledge Store     │  │                  │  │ 09 Security      │
+│                     │  │                        │  │                  │  │ 10 App           │
+│                     │  │                        │  │                  │  │ 11 Monitoring    │
+│                     │  │                        │  │                  │  │ 12 CI/CD         │
+└─────────────────────┘  └────────────────────────┘  └──────────────────┘  └──────────────────┘
 ```
 
 ## What you will walk away with
@@ -93,23 +78,45 @@ See **`PREREQUISITES.md`** for the full checklist. In short: a Databricks worksp
 
 **Notebook 05** defines benchmark questions with ground-truth SQL and pushes them to the primary agent's **Benchmark** tab:
 
-```mermaid
-flowchart TD
-    B1["Define benchmark questions\nwith ground-truth SQL"] --> B2["Push to Genie\nBenchmarks tab"]
-    B2 --> B3["Run in UI\nReview failures"]
-    B3 --> B4["Accept knowledge snippets\nUpdate ground truth"]
-    B4 --> B5{"All passing?"}
-    B5 -->|No| B3
-    B5 -->|Yes| B6["Benchmarks green"]
+```
+  Define benchmark questions with ground-truth SQL
+                        │
+                        ▼
+            Push to Genie Benchmarks tab
+                        │
+                        ▼
+        ┌──▶ Run in UI / Review failures
+        │               │
+        │               ▼
+        │   Accept knowledge snippets /
+        │       Update ground truth
+        │               │
+        │               ▼
+        │         All passing?
+        │          │        │
+        │         No       Yes
+        └──────────┘        │
+                            ▼
+                    Benchmarks green
 ```
 
 **Notebook 08** proves curation matters by running the same four hard questions against all three agents:
 
-```mermaid
-flowchart TD
-    A1["4 hard questions"] --> A2["Run on Baseline,\nMetric View, Knowledge Store"]
-    A2 --> A3["Compare pass rates\nside by side"]
-    A3 --> A4["Baseline struggles;\nKnowledge Store wins;\nMetric View is deterministic\nwithin its perimeter"]
+```
+            4 hard questions
+                   │
+                   ▼
+  Run on Baseline, Metric View,
+        Knowledge Store
+                   │
+                   ▼
+    Compare pass rates side by side
+                   │
+                   ▼
+     Baseline struggles;
+     Knowledge Store wins;
+     Metric View is deterministic
+       within its perimeter
 ```
 
 The benchmark questions **teach patterns** (state joins, ratio calculations, shift
