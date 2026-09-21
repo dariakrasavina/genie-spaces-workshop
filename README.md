@@ -4,9 +4,9 @@ A hands-on workshop that teaches you to **build, curate, evaluate, and operate a
 
 The core message: a Genie Agent is only as good as the **data foundation and curation** behind it. You'll build **three agents on the same data** and prove, with benchmarks, that curation is what earns trust:
 
-- **Baseline** — tables only (the "before")
-- **Metric View** — a governed semantic layer with pinned joins and KPI formulas
-- **Knowledge Store** — measures, filters, fields, joins, synonyms, and example SQL (the "after", and your primary agent)
+- **[Baseline](https://learn.microsoft.com/en-us/azure/databricks/genie-agents/concepts#select-data)** — tables only (the "before")
+- **[Metric View](https://learn.microsoft.com/en-us/azure/databricks/uc-semantics/metric-views/)** — a governed semantic layer with pinned joins and KPI formulas
+- **[Knowledge Store](https://learn.microsoft.com/en-us/azure/databricks/genie-agents/tune-quality)** — measures, filters, fields, joins, synonyms, and example SQL (the "after", and your primary agent)
 
 ## Workshop flow
 
@@ -88,23 +88,45 @@ See **`PREREQUISITES.md`** for the full checklist. In short: a Databricks worksp
 
 **Notebook 05** defines benchmark questions with ground-truth SQL and pushes them to the primary agent's **Benchmark** tab:
 
-```mermaid
-flowchart TD
-    B1["Define benchmark questions\nwith ground-truth SQL"] --> B2["Push to Genie\nBenchmarks tab"]
-    B2 --> B3["Run in UI\nReview failures"]
-    B3 --> B4["Accept knowledge snippets\nUpdate ground truth"]
-    B4 --> B5{"All passing?"}
-    B5 -->|No| B3
-    B5 -->|Yes| B6["Benchmarks green"]
+```
+  Define benchmark questions with ground-truth SQL
+                        │
+                        ▼
+            Push to Genie Benchmarks tab
+                        │
+                        ▼
+        ┌──▶ Run in UI / Review failures
+        │               │
+        │               ▼
+        │   Accept knowledge snippets /
+        │       Update ground truth
+        │               │
+        │               ▼
+        │         All passing?
+        │          │        │
+        │         No       Yes
+        └──────────┘        │
+                            ▼
+                    Benchmarks green
 ```
 
 **Notebook 08** proves curation matters by running the same four hard questions against all three agents:
 
-```mermaid
-flowchart TD
-    A1["4 hard questions"] --> A2["Run on Baseline,\nMetric View, Knowledge Store"]
-    A2 --> A3["Compare pass rates\nside by side"]
-    A3 --> A4["Baseline struggles;\nKnowledge Store wins;\nMetric View is deterministic\nwithin its perimeter"]
+```
+            4 hard questions
+                   │
+                   ▼
+  Run on Baseline, Metric View,
+        Knowledge Store
+                   │
+                   ▼
+    Compare pass rates side by side
+                   │
+                   ▼
+     Baseline struggles;
+     Knowledge Store wins;
+     Metric View is deterministic
+       within its perimeter
 ```
 
 The benchmark questions **teach patterns** (state joins, ratio calculations, shift
