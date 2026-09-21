@@ -46,7 +46,7 @@ Genie **augments** dashboards; it doesn't replace them. Don't push users to re�
 | **Metric views** as the governed semantic layer (+ metric-view agent) | H | `03b` |
 | *Break* | | |
 | **Knowledge Store** — synonyms, joins, measures, filters, fields, example SQL, minimal instructions | H | `04` |
-| **Evaluate with Benchmarks** + Monitoring & **consumer feedback actions** | H | `05`, `11` |
+| **Evaluate with Benchmarks** + Monitoring & **consumer feedback actions** | H | `05`, `10` |
 | *Break* | | |
 | **Ask your own questions** in the agent | H | `06` |
 | **What's new/next:** iframe embed (GA) · Conversation API · Genie One in Slack/Teams · mobile app · Genie Workbench · multi‑agent orchestration | T/D | slides + snippets |
@@ -157,7 +157,7 @@ serialized_space = {
 
 **Remaining (pass 2):**
 6. `05` benchmarks: add the blog's **progressive‑accuracy narrative** (0→54→77→100%) + LLM‑judge / Agent‑mode note.
-7. `11` monitoring: **consumer‑feedback loop** (Yes / Fix it / Request review, "Analyze Space Usage"); soften the no‑native‑alerts claim.
+7. `10` monitoring: **consumer‑feedback loop** (Yes / Fix it / Request review, "Analyze Space Usage"); soften the no‑native‑alerts claim.
 8. **"When to use Genie vs. dashboard"** markdown in `00` + recap in `06`.
 9. **iframe‑embedding** mini‑guide (GA); tighten Conversation API usage to the 5.9 cadence.
 10. **SKILL.md** benchmark‑API self‑contradiction fix; verify skill against the confirmed schema.

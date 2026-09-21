@@ -10,16 +10,30 @@ The core message: a Genie Agent is only as good as the **data foundation and cur
 
 ## Workshop flow
 
-```
- 1. Data foundation       2. Build & curate         3. Evaluate           4. Use & operate
-┌─────────────────────┐  ┌────────────────────────┐  ┌──────────────────┐  ┌──────────────────┐
-│ 01 Load Data        │  │ 03 Baseline agent      │  │ 05 Benchmarks    │  │ 06 Explore       │
-│ 02 Prepare Tables   │─▶│ 03b Metric Views       │─▶│ 08 3-way Compare │─▶│ 07 Genie Code    │
-│                     │  │ 04 Knowledge Store     │  │                  │  │ 09 Security      │
-│                     │  │                        │  │                  │  │ 10 App           │
-│                     │  │                        │  │                  │  │ 11 Monitoring    │
-│                     │  │                        │  │                  │  │ 12 CI/CD         │
-└─────────────────────┘  └────────────────────────┘  └──────────────────┘  └──────────────────┘
+```mermaid
+flowchart LR
+    subgraph data ["1. Data foundation"]
+        NB01["01 Load Data"]
+        NB02["02 Prepare Tables"]
+    end
+    subgraph build ["2. Build & curate"]
+        NB03["03 Baseline agent"]
+        NB03b["03b Metric Views"]
+        NB04["04 Knowledge Store"]
+    end
+    subgraph prove ["3. Evaluate"]
+        NB05["05 Benchmarks"]
+        NB08["08 3-way Compare"]
+    end
+    subgraph use ["4. Use & operate"]
+        NB06["06 Explore"]
+        NB07["07 Genie Code"]
+        NB09["09 Security"]
+        NB10["10 Monitoring"]
+        NB11["11 CI/CD"]
+    end
+
+    NB01 --> NB02 --> NB03 --> NB03b --> NB04 --> NB05 --> NB06 --> NB07 --> NB08 --> NB09 --> NB10 --> NB11
 ```
 
 ## What you will walk away with
@@ -29,7 +43,7 @@ The core message: a Genie Agent is only as good as the **data foundation and cur
 - **Proof that curation matters** (Notebook 08) — the same hard questions run against baseline, metric-view, and Knowledge Store agents, side by side.
 - **A repeatable evaluation workflow** (Notebook 05) — push benchmarks, run them in the UI, review failures with knowledge snippets, and iterate.
 - **Security guardrails** (Notebook 09) — column masking with Unity Catalog, proving Genie respects row/column security.
-- **A deployable app** (Notebook 10), **monitoring** (Notebook 11), and **CI/CD** (Notebook 12).
+- **Monitoring** (Notebook 10) and **CI/CD** (Notebook 11) for operating agents over time.
 
 ## Prerequisites
 
@@ -41,18 +55,15 @@ See **`PREREQUISITES.md`** for the full checklist. In short: a Databricks worksp
 
    ```
    /Workspace/Users/<your_email>/genie-agents-workshop/
-     notebooks/        ← 15 notebooks (00–13, includes 03b)
+     notebooks/        ← 14 notebooks (00–12, includes 03b)
      templates/        ← Genie agent configuration (reference)
      skill/            ← Genie Code skill file
    ```
 
 2. Open **`00_workshop_config`** and set your **catalog** and **schema**.
 
-3. Run notebooks **01 → 13** in order. Every notebook reads your config
+3. Run notebooks **01 → 12** in order. Every notebook reads your config
    automatically via `%run ./00_workshop_config`.
-
-   Notebook 10 generates the Databricks App source (`app.py`, `app.yaml`,
-   `requirements.txt`) for you — there is no separate `app/` folder to import.
 
 ## Notebooks
 
@@ -69,10 +80,9 @@ See **`PREREQUISITES.md`** for the full checklist. In short: a Databricks worksp
 | 07 | **Genie Code Skills** | Use a Genie Code skill and a prompt to create an agent — no API code needed |
 | 08 | **3-way Compare** | Run the same hard questions on baseline vs. metric-view vs. Knowledge Store agents |
 | 09 | **Security** | Column masking with Unity Catalog — prove Genie respects row/column security |
-| 10 | **Deploy App** | Wrap Genie in a Databricks App |
-| 11 | **Monitoring** | Track accuracy, usage, and query performance over time |
-| 12 | **CI/CD** *(optional)* | Promote Genie agents across environments with code |
-| 13 | **Cleanup** *(optional)* | Remove all workshop assets (agents, metric view, tables, volume, app) |
+| 10 | **Monitoring** | Track accuracy, usage, and query performance over time |
+| 11 | **CI/CD** *(optional)* | Promote Genie agents across environments with code |
+| 12 | **Cleanup** *(optional)* | Remove all workshop assets (agents, metric view, tables, volume) |
 
 ## How the evaluation works
 
@@ -127,13 +137,12 @@ aggregation). The four comparison questions in notebook 08 are intentionally
 
 - **07 — Skills:** Copy `skill/manufacturing-analytics_genie/SKILL.md` into your workspace's `.assistant/skills/` directory before running notebook 07.
 - **09 — Security:** Replace `admin_group` with a real group in your workspace.
-- **10 — App:** Notebook 10 generates the app source (`app.py`, `app.yaml`, `requirements.txt`) inline and deploys it — there is no committed `app/` folder.
-- **11 — Monitoring:** Queries `system.access.audit` and `system.query.history`; the notebook handles missing access gracefully.
+- **10 — Monitoring:** Queries `system.access.audit` and `system.query.history`; the notebook handles missing access gracefully.
 
 ## Repository structure
 
 ```
-├── notebooks/          15 workshop notebooks (00–13, includes 03b)
+├── notebooks/          14 workshop notebooks (00–12, includes 03b)
 ├── templates/          Genie agent configuration (reference)
 │   └── manufacturing_genie_configured.json
 ├── skill/              Genie Code skill file
@@ -143,8 +152,6 @@ aggregation). The four comparison questions in notebook 08 are intentionally
 ├── PREREQUISITES.md    Attendee pre-work checklist
 └── README.md
 ```
-
-> Notebook 10 generates the Databricks App source at run time, so there is no committed `app/` folder.
 
 ## Compute
 
